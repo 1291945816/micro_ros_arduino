@@ -22,6 +22,8 @@ if [ $OPTIND -eq 1 ]; then
     PLATFORMS+=("portenta-m7")
     PLATFORMS+=("kakutef7-m7")
     PLATFORMS+=("esp32")
+    # add qemu interface for riscv 
+    PLATFORMS+=("qemu-riscv")
 fi
 
 shift $((OPTIND-1))
@@ -56,6 +58,23 @@ popd > /dev/null
 
 ######## Clean and source ########
 find /project/src/ ! -name micro_ros_arduino.h ! -name *.c ! -name *.cpp ! -name *.c.in -delete
+
+
+
+######## Build for qemu-risc-v  ########
+if [[ " ${PLATFORMS[@]} " =~ " qemu-riscv " ]]; then
+    rm -rf firmware/build
+
+    export TOOLCHAIN_PREFIX=/uros_ws/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-
+    ros2 run micro_ros_setup build_firmware.sh /project/extras/library_generation/opencr_toolchain.cmake /project/extras/library_generation/colcon.meta
+
+    find firmware/build/include/ -name "*.c"  -delete
+    cp -R firmware/build/include/* /project/src/
+
+    mkdir -p /project/src/cortex-m7/fpv5-sp-d16-softfp
+    cp -R firmware/build/libmicroros.a /project/src/cortex-m7/fpv5-sp-d16-softfp/libmicroros.a
+fi
+
 
 ######## Build for OpenCR  ########
 if [[ " ${PLATFORMS[@]} " =~ " opencr1 " ]]; then
