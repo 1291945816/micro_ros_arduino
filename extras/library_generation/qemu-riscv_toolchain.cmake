@@ -9,6 +9,7 @@ set(CMAKE_CXX_COMPILER $ENV{TOOLCHAIN_PREFIX}g++)
 SET(CMAKE_C_COMPILER_WORKS 1 CACHE INTERNAL "")
 SET(CMAKE_CXX_COMPILER_WORKS 1 CACHE INTERNAL "")
 
+# 提供一些特性上的支持
 set(FLAGS "-O2    -ffunction-sections -fdata-sections -nostdlib --param max-inline-insns-single=500 -fno-exceptions  -march=rv64imfd -mabi=lp64d" CACHE STRING "" FORCE)
 
 set(CMAKE_C_FLAGS_INIT "-std=c11 ${FLAGS} -DCLOCK_MONOTONIC=0 -D'__attribute__(x)='" CACHE STRING "" FORCE)

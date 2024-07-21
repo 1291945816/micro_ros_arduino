@@ -56,8 +56,9 @@ pushd firmware/mcu_ws > /dev/null
 
 popd > /dev/null
 
+######## 清除原先的构建信息 ########
 ######## Clean and source ########
-find /project/src/ ! -name micro_ros_arduino.h ! -name *.c ! -name *.cpp ! -name *.c.in -delete
+find /project/src/ ! -name micro_ros_qemu-riscv.h ! -name *.c ! -name *.cpp ! -name *.c.in -delete
 
 
 
@@ -65,14 +66,17 @@ find /project/src/ ! -name micro_ros_arduino.h ! -name *.c ! -name *.cpp ! -name
 if [[ " ${PLATFORMS[@]} " =~ " qemu-riscv " ]]; then
     rm -rf firmware/build
 
-    export TOOLCHAIN_PREFIX=/uros_ws/gcc-arm-none-eabi-5_4-2016q2/bin/arm-none-eabi-
-    ros2 run micro_ros_setup build_firmware.sh /project/extras/library_generation/opencr_toolchain.cmake /project/extras/library_generation/colcon.meta
+    # 配置工具链 -- 转为gcc
+    export TOOLCHAIN_PREFIX=/uros_ws/host-tools/gcc/riscv64-elf-x86_64/bin/riscv64-unknown-elf-
+    ros2 run micro_ros_setup build_firmware.sh /project/extras/library_generation/qemu-riscv_toolchain.cmake /project/extras/library_generation/colcon.meta
 
     find firmware/build/include/ -name "*.c"  -delete
     cp -R firmware/build/include/* /project/src/
 
-    mkdir -p /project/src/cortex-m7/fpv5-sp-d16-softfp
-    cp -R firmware/build/libmicroros.a /project/src/cortex-m7/fpv5-sp-d16-softfp/libmicroros.a
+    # 创建对应的库目录
+    mkdir -p /project/src/qemu-riscv
+    # 拷贝生成的库
+    cp -R firmware/build/libmicroros.a /project/src/qemu-riscv/libmicroros.a
 fi
 
 
