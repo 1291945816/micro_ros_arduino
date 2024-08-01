@@ -58,11 +58,11 @@ popd > /dev/null
 
 ######## 清除原先的构建信息 ########
 ######## Clean and source ########
-find /project/src/ ! -name micro_ros_qemu-riscv.h ! -name *.c ! -name *.cpp ! -name *.c.in -delete
+find /project/src/ ! -name micro_ros_uniproton.h ! -name *.c ! -name *.cpp ! -name *.c.in -delete
 
 
 
-######## Build for qemu-risc-v  ########
+######## Build for uniproton  ########
 if [[ " ${PLATFORMS[@]} " =~ " qemu-riscv " ]]; then
     rm -rf firmware/build
 
@@ -74,9 +74,9 @@ if [[ " ${PLATFORMS[@]} " =~ " qemu-riscv " ]]; then
     cp -R firmware/build/include/* /project/src/
 
     # 创建对应的库目录
-    mkdir -p /project/src/qemu-riscv
+    mkdir -p /project/microros
     # 拷贝生成的库
-    cp -R firmware/build/libmicroros.a /project/src/qemu-riscv/libmicroros.a
+    cp -R firmware/build/libmicroros.a /project/microros/libmicroros.a
 fi
 
 
